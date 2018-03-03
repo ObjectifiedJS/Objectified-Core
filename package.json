@@ -19,8 +19,9 @@
   ],
   "bin": {},
   "scripts": {
-    "start": "npm install && npm run build",
-    "build": "gulp"
+    "start": "npm install && npm run buildCore",
+    "buildCore": "gulp",
+    "buildCoreForModule": "gulp ObjectifiedCoreForModule"
   },
   "test": "",
   "main": "",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "gulp-jshint": "",
     "gulp-watch": "^3.0.0",
+    "jshint": "^2.9.5",
     "mocha": "^5.0.0"
   },
   "bundledDependencies": [],

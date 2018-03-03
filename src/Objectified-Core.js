@@ -1,9 +1,8 @@
 /**
-* An attempt to make a js extendable framework...
+* An attempt to make an extendable js framework...
 * @namespace window.Objectified
 */
 
-// change how this is defined
 ;var Objectified = ( function( undefined ) {
 
     'use strict';

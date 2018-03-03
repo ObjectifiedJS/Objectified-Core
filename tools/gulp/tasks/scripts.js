@@ -22,3 +22,19 @@ gulp.task('ObjectifiedCore',
 			.pipe(gulp.dest('./dist/'));
 	})
 );
+
+gulp.task('ObjectifiedCoreForModule', 
+	gulpInternalError(function(success, gulpBuildError) {
+		console.log("for module running");
+
+		// concat on one file???
+		return gulp.src(buildFileArray)
+			.pipe(concat('Objectified-Core.js').on('error', gulpBuildError))
+			.pipe(gulp.dest('./../dist/'))
+			.pipe(uglify().on('error', gulpBuildError))
+			.pipe(rename({
+				'extname':'.min.js'
+			}))
+			.pipe(gulp.dest('./../dist/'));
+	})
+);
