@@ -24,10 +24,16 @@
     function objectifiedLog(){
         /*
             I know it sounds crazy but i want an internal log
-            return console && console.log(arguments);
         */
-        return '';
+        return this.internals.logArray.push(arguments);
+    }
 
+    // this will be mapped to UTILS.log
+    function outputObjectifiedLog(){
+        /*
+            I know it sounds crazy but i want an internal log
+        */
+        return this.internals.logArray.push(arguments);
     }
 
     // this will be mapped to UTILS.extend
@@ -83,30 +89,47 @@
 
     }
 
-    function ObjectifiedInstanceConstructor(objectifiedInstancePropertyObject){
+    function ObjectifiedInstanceConstructor(initializeObject){
 
-        var objectified_self = this,
-            instanceObj = objectifiedInstancePropertyObject || {
-                'modulePropertiesObject' : objectifiedInstancePropertyObject.modulePropertiesObject || {}
-            };
+        var objectified_self = this;
 
-        objectified_self.instancePropertyObject = {
-            'modulePropertiesObject' : instanceObj.modulePropertiesObject || {}
-        };
+        objectified_self.instanceObject = {};
+
+        if(
+            initializeObject
+        ){
+            for(var instanceObjectProperty in initializeObject){
+                objectified_self.instanceObject[instanceObjectProperty] = initializeObject[instanceObjectProperty];
+            }
+        }
 
         return /* just */ objectified_self;
 
     }
 
     // This is what initializes an Objectified instance...
-    ObjectifiedInstanceConstructor.init = function(objectifiedInstancePropertyObject){
+    ObjectifiedInstanceConstructor.init = function(initializeObject){
 
-        return new ObjectifiedInstanceConstructor(objectifiedInstancePropertyObject || {});
+        return new ObjectifiedInstanceConstructor( initializeObject );
 
     };
 
-    // Objectified Utils setup...
-    ObjectifiedInstanceConstructor.prototype.UTILS = {
+    // Objectified Internals...
+    ObjectifiedInstanceConstructor.prototype.internals = {
+        version:'0.1.0',
+
+        outputLog : function(){
+            var ObjectifiedSelf = this;
+
+            for(var logItem=0;ObjectifiedSelf.logArray.length>logItem;logItem++){
+                console.log.apply(null, ObjectifiedSelf.logArray[logItem] );
+            }
+
+            ObjectifiedSelf.internals.logArray = [];
+        },
+
+        logArray : [],
+
         extend : function(){
             var ObjectifiedSelf = this;
             return function(extendingObjectifiedObject, objectifiedModuleProperties){
@@ -124,19 +147,10 @@
         log : function(){
             var ObjectifiedSelf = this;
             return function(){
-                return objectifiedLog.apply(ObjectifiedSelf, arguments);
+                return objectifiedLog.apply(ObjectifiedSelf.prototype, arguments);
             };
         }.call(ObjectifiedInstanceConstructor)
     };
-
-    // Objectified itselfs properties...
-    ObjectifiedInstanceConstructor.prototype.objectifiedProperties = {
-        'version':'0.1.0'
-    };
-
-    // Do AMD and CJS work
-    // just attach to the root object like window
-    globalRoot.Objectified = ObjectifiedInstanceConstructor;
 
     return ObjectifiedInstanceConstructor;
 
